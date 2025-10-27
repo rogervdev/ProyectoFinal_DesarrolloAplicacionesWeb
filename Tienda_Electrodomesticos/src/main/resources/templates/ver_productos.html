@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html
+  lang="es"
+  xmlns:th="http://www.thymeleaf.org"
+  th:replace="~{base::Layout(~{::section})}"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Detalle de Producto</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <script
+      src="https://kit.fontawesome.com/a2e0e6ad4f.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+
+  <body class="bg-light">
+    <section class="py-5">
+      <div class="container">
+        <div class="row g-4">
+          <!-- ✅ Mensaje de éxito -->
+          <th:block th:if="${session.successMsg}">
+            <div
+              class="alert alert-success alert-dismissible fade show"
+              role="alert"
+            >
+              <span th:text="${session.successMsg}"></span>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Close"
+              ></button>
+            </div>
+            <th:block
+              th:text="${@commonServiceImpl.removeSessionMessage()}"
+            ></th:block>
+          </th:block>
+
+          <!-- ❌ Mensaje de error -->
+          <th:block th:if="${session.errorMsg}">
+            <div
+              class="alert alert-danger alert-dismissible fade show"
+              role="alert"
+            >
+              <span th:text="${session.errorMsg}"></span>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Close"
+              ></button>
+            </div>
+            <th:block
+              th:text="${@commonServiceImpl.removeSessionMessage()}"
+            ></th:block>
+          </th:block>
+
+          <!-- Imagen del producto -->
+          <div class="col-lg-6 d-flex justify-content-center">
+            <div
+              class="bg-white rounded-4 shadow-sm p-3 p-md-4"
+              style="max-width: 90%"
+            >
+              <img
+                th:src="@{'/img/product_img/' + ${producto.imagen}}"
+                alt="Laptop HP"
+                class="img-fluid rounded-3"
+              />
+            </div>
+          </div>
+
+          <!-- Detalles del producto -->
+          <div class="col-lg-6">
+            <div class="bg-white rounded-4 shadow-sm p-4 p-md-5 h-100">
+              <div
+                class="d-flex justify-content-between align-items-start mb-3"
+              >
+                <h1 class="fw-bold text-dark mb-0">[[${producto.titulo}]]</h1>
+                <th:block th:if="${producto.stock > 0}">
+                  <span class="badge bg-success fs-6 py-2 px-3"
+                    >Disponible</span
+                  >
+                </th:block>
+                <th:block th:unless="${producto.stock > 0}">
+                  <span class="badge bg-danger fs-6 py-2 px-3">Agotado</span>
+                </th:block>
+              </div>
+
+              <p class="text-body-secondary mb-4">
+                [[${producto.descripcion}]]
+              </p>
+
+              <!-- Detalles técnicos -->
+              <div class="mb-4">
+                <h6 class="fw-semibold text-muted mb-2">
+                  Detalles del producto
+                </h6>
+                <ul class="list-unstyled mb-0">
+                  <li class="mb-1">
+                    <span class="fw-medium">Categoría:</span>
+                    <span class="text-body-secondary ms-1"
+                      >[[${producto.categoria.nombre}]]</span
+                    >
+                  </li>
+                  <li class="mb-1">
+                    <span class="fw-medium">Garantía:</span>
+                    <span class="text-body-secondary ms-1"
+                      >1 año por fallas de fábrica</span
+                    >
+                  </li>
+                  <li>
+                    <span class="fw-medium">Política:</span>
+                    <span class="text-body-secondary ms-1"
+                      >Devolución en 7 días</span
+                    >
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Precios -->
+              <div class="bg-light rounded-3 p-3 mb-4">
+                <div class="d-flex align-items-baseline mb-1">
+                  <span class="fs-4 fw-bold text-success me-2"
+                    >[[${producto.precioConDescuento}]]</span
+                  >
+                  <span class="text-body-secondary text-decoration-line-through"
+                    >[[${producto.precio}]]</span
+                  >
+                </div>
+                <small class="text-muted"
+                  >Descuento aplicado: [[${producto.descuento}]]%</small
+                >
+              </div>
+
+              <!-- Beneficios -->
+              <div class="row text-center g-3 mb-4">
+                <div class="col-4">
+                  <div class="d-flex flex-column align-items-center">
+                    <i
+                      class="fas fa-hand-holding-usd fa-lg text-success mb-1"
+                    ></i>
+                    <small class="text-muted">Pago contra entrega</small>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="d-flex flex-column align-items-center">
+                    <i class="fas fa-undo fa-lg text-warning mb-1"></i>
+                    <small class="text-muted">Devolución disponible</small>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="d-flex flex-column align-items-center">
+                    <i class="fas fa-shipping-fast fa-lg text-info mb-1"></i>
+                    <small class="text-muted">Envío gratis</small>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Botones -->
+              <div class="d-flex flex-wrap gap-3">
+                <!-- Producto disponible -->
+                <th:block th:if="${producto.stock > 0}">
+                  <th:block th:if="${usuario == null}">
+                    <a
+                      href="/signin"
+                      class="btn btn-danger px-4 py-2 fw-medium"
+                    >
+                      <i class="fas fa-cart-plus me-2"></i> Agregar al carrito
+                    </a>
+                  </th:block>
+
+                  <th:block th:unless="${usuario==null}">
+                    <a
+                      th:href="@{'/usuario/addCart?pid='+${producto.id}+'&uid='+${usuario.id}}"
+                      class="btn btn-danger px-4 py-2 fw-medium"
+                    >
+                      <i class="fas fa-cart-plus me-2"></i> Agregar al carrito
+                    </a>
+                  </th:block>
+                </th:block>
+
+                <!-- Producto fuera de stock -->
+                <th:block th:unless="${producto.stock > 0}">
+                  <button
+                    class="btn btn-outline-secondary px-4 py-2 fw-medium"
+                    disabled
+                  >
+                    <i class="fas fa-ban me-2"></i>Fuera de stock
+                  </button>
+                </th:block>
+
+                <!-- Botón volver -->
+                <a
+                  href="/productos"
+                  class="btn btn-outline-dark px-4 py-2 fw-medium"
+                >
+                  <i class="fas fa-arrow-left me-2"></i>Volver
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

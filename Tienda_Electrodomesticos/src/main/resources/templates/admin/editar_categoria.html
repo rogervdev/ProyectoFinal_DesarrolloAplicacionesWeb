@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{base::Layout(~{::section})}">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Editar Categoría</title>
+  </head>
+  <body>
+    <section>
+      <div class="container-fluid py-5 mt-4">
+        <div class="row justify-content-center g-4">
+
+          <!-- Formulario de edición de categoría -->
+          <div class="col-md-5">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+
+              <!-- Header -->
+              <div class="card-header bg-primary text-white text-center py-3 rounded-top">
+                <h4 class="fw-semibold mb-0">
+                  <i class="fa-solid fa-folder-plus me-2"></i> Editar Categoría
+                </h4>
+
+                <!-- Mensajes -->
+                <th:block th:if="${session.successMsg}">
+                  <div class="alert alert-success alert-dismissible fade show mt-3 mb-0" role="alert">
+                    <strong th:text="${session.successMsg}"></strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                  </div>
+                  <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+                </th:block>
+
+                <th:block th:if="${session.errorMsg}">
+                  <div class="alert alert-danger alert-dismissible fade show mt-3 mb-0" role="alert">
+                    <strong th:text="${session.errorMsg}"></strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                  </div>
+                  <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+                </th:block>
+              </div>
+
+              <!-- Body -->
+              <div class="card-body p-4">
+                <form action="/admin/actualizar_categoria" method="post" enctype="multipart/form-data">
+                  <input type="hidden" name="id" th:value="${categoria.id}" />
+
+                  <!-- Nombre -->
+                  <div class="mb-3">
+                    <label class="form-label fw-semibold">Nombre de categoría</label>
+                    <input type="text" name="nombre" class="form-control" placeholder="Ejemplo: Electrodomésticos" required th:value="${categoria.nombre}" />
+                  </div>
+
+                  <!-- Estado -->
+                  <div class="mb-3">
+                    <label class="form-label fw-semibold d-block mb-2">Estado</label>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="isActive" id="activo" value="true" th:checked="${categoria.isActive==true}" />
+                      <label class="form-check-label" for="activo">Activo</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="isActive" id="inactivo" value="false" th:checked="${categoria.isActive==false}" />
+                      <label class="form-check-label" for="inactivo">Inactivo</label>
+                    </div>
+                  </div>
+
+                  <!-- Imagen -->
+                  <div class="mb-3">
+                    <label class="form-label fw-semibold">Imagen</label>
+                    <input type="file" name="file" id="fileInput" class="form-control" accept="image/*" />
+                  </div>
+
+                  <!-- Vista previa -->
+                  <div class="mb-3 text-center">
+                    <img id="previewImg" th:src="@{'/img/category_img/' + ${categoria.imagenNombre}}" alt="Imagen de la categoría" class="img-thumbnail rounded-circle" style="max-height: 120px;" />
+                  </div>
+
+                  <!-- Botones -->
+                  <div class="d-flex justify-content-between">
+                    <a href="/admin/categoria" class="btn btn-secondary">
+                      <i class="fa-solid fa-arrow-left me-2"></i> Regresar
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                      <i class="fa-solid fa-circle-check me-2"></i> Guardar Categoría
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </body>
+</html>

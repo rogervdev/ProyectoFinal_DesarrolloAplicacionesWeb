@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html
+  lang="es"
+  xmlns:th="http://www.thymeleaf.org"
+  th:replace="~{base::Layout(~{::section})}"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Mi Primera Pagina Web</title>
+  </head>
+
+  <body>
+    <section class="py-5">
+      <div class="container">
+        <div
+          class="row justify-content-center align-items-center shadow-lg rounded-4 overflow-hidden"
+        >
+          <!-- Imagen lateral -->
+          <div class="col-md-6 d-none d-md-block p-0">
+            <h3>[[${msg}]]</h3>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

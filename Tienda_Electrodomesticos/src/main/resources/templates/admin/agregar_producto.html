@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html
+  lang="es"
+  xmlns:th="http://www.thymeleaf.org"
+  th:replace="~{base::Layout(~{::section})}"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Agregar Producto</title>
+  </head>
+
+  <body>
+    <section>
+      <div class="container py-5 mt-3">
+        <div class="row justify-content-center">
+          <div class="col-md-8 col-lg-6">
+            <div class="card card-sh border-0 rounded-4">
+              <div
+                class="card-header bg-primary text-white text-center py-3 rounded-top"
+              >
+                <h4 class="mb-0 fw-semibold">
+                  <i class="fa-solid fa-square-plus me-2"></i>Agregar Producto
+                </h4>
+                <!-- Mensaje de éxito -->
+                <th:block th:if="${session.successMsg}">
+                  <div
+                    class="alert alert-success alert-dismissible fade show mt-3 mb-0"
+                    role="alert"
+                  >
+                    <strong th:text="${session.successMsg}"></strong>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="alert"
+                      aria-label="Cerrar"
+                    ></button>
+                  </div>
+                  <th:block
+                    th:text="${@commonServiceImpl.removeSessionMessage()}"
+                  ></th:block>
+                </th:block>
+
+                <!-- Mensaje de error -->
+                <th:block th:if="${session.errorMsg}">
+                  <div
+                    class="alert alert-danger alert-dismissible fade show mt-3 mb-0"
+                    role="alert"
+                  >
+                    <strong th:text="${session.errorMsg}"></strong>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="alert"
+                      aria-label="Cerrar"
+                    ></button>
+                  </div>
+                  <th:block
+                    th:text="${@commonServiceImpl.removeSessionMessage()}"
+                  ></th:block>
+                </th:block>
+              </div>
+
+              <div class="card-body p-4">
+                <form
+                  action="/admin/guardar_producto"
+                  method="post"
+                  enctype="multipart/form-data"
+                >
+                  <!-- Título -->
+                  <div class="mb-3">
+                    <label class="form-label fw-semibold">Título</label>
+                    <input
+                      type="text"
+                      name="titulo"
+                      class="form-control"
+                      placeholder="Ejemplo: Laptop HP Pavilion 15"
+                      required
+                    />
+                  </div>
+
+                  <!-- Descripción -->
+                  <div class="mb-3">
+                    <label class="form-label fw-semibold">Descripción</label>
+                    <textarea
+                      rows="3"
+                      name="descripcion"
+                      class="form-control"
+                      placeholder="Breve descripción del producto"
+                      required
+                    ></textarea>
+                  </div>
+
+                  <!-- Categoría -->
+                  <div class="mb-3">
+                    <label class="form-label fw-semibold">Categoría</label>
+					<select class="form-select" name="categoria.id" required>
+					  <option value="" disabled selected>Selecciona una categoría</option>
+					  <option
+					    th:each="c : ${categorias}"
+					    th:value="${c.id}"
+					    th:text="${c.nombre}"
+					  ></option>
+					</select>
+
+                  </div>
+
+                  <!-- Estado -->
+                  <div class="mb-3">
+                    <label class="form-label fw-semibold d-block mb-2"
+                      >Estado</label
+                    >
+                    <div class="form-check form-check-inline">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="isActive"
+                        id="activo"
+                        value="true"
+                        checked
+                      />
+                      <label class="form-check-label" for="activo"
+                        >Activo</label
+                      >
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="isActive"
+                        id="inactivo"
+                        value="false"
+                      />
+                      <label class="form-check-label" for="inactivo"
+                        >Inactivo</label
+                      >
+                    </div>
+                  </div>
+                  <!-- Precio y Stock -->
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label fw-semibold">Precio (S/)</label>
+                      <input
+                        type="number"
+                        name="precio"
+                        step="0.01"
+                        class="form-control"
+                        placeholder="Ejemplo: 899.90"
+                        required
+                      />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label fw-semibold">Stock</label>
+                      <input
+                        type="number"
+                        name="stock"
+                        class="form-control"
+                        placeholder="Cantidad disponible"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <!-- Imagen -->
+                  <div class="mb-4">
+                    <label class="form-label fw-semibold"
+                      >Imagen del producto</label
+                    >
+                    <input
+                      type="file"
+                      name="file"
+                      class="form-control"
+                      accept="image/*"
+                      required
+                    />
+                  </div>
+
+                  <!-- Botón -->
+                  <div class="d-flex justify-content-between gap-2">
+                    <!-- Botón regresar a Admin -->
+                    <a href="/admin/" class="btn btn-secondary flex-grow-1">
+                      <i class="fa-solid fa-arrow-left me-2"></i> Regresar
+                    </a>
+
+                    <!-- Botón ver productos -->
+                    <a href="/admin/productos" class="btn btn-info flex-grow-1">
+                      <i class="fa-solid fa-eye me-2"></i> Ver Productos
+                    </a>
+
+                    <!-- Botón guardar -->
+                    <button type="submit" class="btn btn-primary flex-grow-1">
+                      <i class="fa-solid fa-circle-check me-2"></i> Guardar
+                      Producto
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html
+  lang="es"
+  xmlns:th="http://www.thymeleaf.org"
+  th:replace="~{base::Layout(~{::section})}"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Mi Primera Página Web</title>
+  </head>
+
+  <body>
+    <section>
+      <div class="container py-5">
+        <h2 class="text-center text-primary fw-bold mb-5">
+          Panel de Administración
+        </h2>
+
+        <div class="row justify-content-center g-4">
+          <!-- Card: Agregar Producto -->
+          <div class="col-10 col-sm-6 col-md-4 col-lg-3">
+            <a
+              href="/admin/agregar_producto"
+              class="text-decoration-none text-dark"
+            >
+              <div
+                class="card shadow-sm border-0 text-center p-4 bg-body-tertiary h-100"
+              >
+                <div class="mb-3 text-primary">
+                  <i class="fa-solid fa-box-open fa-3x"></i>
+                </div>
+                <h5 class="fw-semibold">Agregar Producto</h5>
+                <p class="small text-secondary mb-0">
+                  Añade nuevos artículos al catálogo
+                </p>
+              </div>
+            </a>
+          </div>
+
+          <!-- Card: Agregar Categoría -->
+          <div class="col-10 col-sm-6 col-md-4 col-lg-3">
+            <a href="/admin/categoria" class="text-decoration-none text-dark">
+              <div
+                class="card shadow-sm border-0 text-center p-4 bg-body-tertiary h-100"
+              >
+                <div class="mb-3 text-success">
+                  <i class="fa-solid fa-tags fa-3x"></i>
+                </div>
+                <h5 class="fw-semibold">Agregar Categoría</h5>
+                <p class="small text-secondary mb-0">
+                  Crea o gestiona categorías de productos
+                </p>
+              </div>
+            </a>
+          </div>
+
+          <!-- Card: Ver Productos -->
+          <div class="col-10 col-sm-6 col-md-4 col-lg-3">
+            <a href="/admin/productos" class="text-decoration-none text-dark">
+              <div
+                class="card shadow-sm border-0 text-center p-4 bg-body-tertiary h-100"
+              >
+                <div class="mb-3 text-info">
+                  <i class="fa-solid fa-eye fa-3x"></i>
+                </div>
+                <h5 class="fw-semibold">Ver Productos</h5>
+                <p class="small text-secondary mb-0">
+                  Consulta la lista completa de productos
+                </p>
+              </div>
+            </a>
+          </div>
+
+          <!-- Card: Órdenes -->
+          <div class="col-10 col-sm-6 col-md-4 col-lg-3">
+            <a href="#" class="text-decoration-none text-dark">
+              <div
+                class="card shadow-sm border-0 text-center p-4 bg-body-tertiary h-100"
+              >
+                <div class="mb-3 text-warning">
+                  <i class="fa-solid fa-cart-shopping fa-3x"></i>
+                </div>
+                <h5 class="fw-semibold">Órdenes</h5>
+                <p class="small text-secondary mb-0">
+                  Visualiza y gestiona pedidos realizados
+                </p>
+              </div>
+            </a>
+          </div>
+
+          <!-- Card: Usuarios -->
+          <div class="col-10 col-sm-6 col-md-4 col-lg-3">
+            <a href="/admin/usuarios" class="text-decoration-none text-dark">
+              <div
+                class="card shadow-sm border-0 text-center p-4 bg-body-tertiary h-100"
+              >
+                <div class="mb-3 text-danger">
+                  <i class="fa-solid fa-users fa-3x"></i>
+                </div>
+                <h5 class="fw-semibold">Usuarios</h5>
+                <p class="small text-secondary mb-0">
+                  Administra cuentas y permisos de clientes
+                </p>
+              </div>
+            </a>
+          </div>
+
+          <!-- Card: Agregar Administrador -->
+          <div class="col-10 col-sm-6 col-md-4 col-lg-3">
+            <a href="/admin/" class="text-decoration-none text-dark">
+              <div
+                class="card shadow-sm border-0 text-center p-4 bg-body-tertiary h-100"
+              >
+                <div class="mb-3 text-secondary">
+                  <i class="fa-solid fa-user-shield fa-3x"></i>
+                </div>
+                <h5 class="fw-semibold">Agregar Administrador</h5>
+                <p class="small text-secondary mb-0">
+                  Registra nuevos administradores del sistema
+                </p>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

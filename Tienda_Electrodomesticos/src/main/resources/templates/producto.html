@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html
+  lang="es"
+  xmlns:th="http://www.thymeleaf.org"
+  th:replace="~{base::Layout(~{::section})}"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Productos - Mi Tienda</title>
+  </head>
+
+  <body>
+    <section class="py-5">
+      <!-- 🔍 Barra de búsqueda -->
+      <div class="container-fluid bg-primary py-4 mb-5">
+        <div class="row justify-content-center">
+          <div class="col-10 col-md-8 col-lg-6">
+            <form action="buscar" method="get">
+              <div class="input-group input-group-lg shadow-sm">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Buscar productos..."
+                  name="ch"
+                  aria-label="Buscar productos"
+                />
+                <button
+                  class="btn btn-light fw-semibold text-primary"
+                  type="submit"
+                >
+                  <i class="fa-solid fa-magnifying-glass me-2"></i> Buscar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- 🧭 Contenedor principal -->
+      <div class="container-fluid">
+        <div class="row g-4">
+          <!-- 🗂️ Categorías -->
+          <div class="col-12 col-md-3 col-lg-2">
+            <div class="card border-0 shadow-sm h-100">
+              <!-- Encabezado -->
+              <div
+                class="card-header bg-primary text-white text-center fw-semibold py-3"
+              >
+                <i class="fa-solid fa-tags me-2"></i> Categorías
+              </div>
+
+              <!-- Lista de categorías -->
+              <div class="list-group list-group-flush">
+                <!-- Mostrar todas las categorías -->
+                <a
+                  href="/productos"
+                  class="list-group-item list-group-item-action text-center fw-semibold text-primary"
+                >
+                  <i class="fa-solid fa-layer-group me-1"></i> Todo
+                </a>
+
+                <!-- Categorías dinámicas -->
+                <a
+                  th:each="c : ${categorias}"
+                  th:href="@{'/productos?categoria=' + ${c.nombre}}"
+                  class="list-group-item list-group-item-action text-center fw-semibold"
+                  th:text="${c.nombre}"
+                ></a>
+              </div>
+            </div>
+          </div>
+
+          <!-- 🛒 Productos -->
+          <div class="col-12 col-md-9 col-lg-10">
+            <div class="card border-0 shadow-sm">
+              <div class="card-header bg-white border-0 text-center py-3">
+                <h3 class="fw-bold text-primary mb-0">
+                  <i class="fa-solid fa-box-open me-2 text-secondary"></i>
+                  Productos
+                </h3>
+              </div>
+
+              <div class="card-body">
+                <div class="row g-4 justify-content-center">
+
+                  <th:block th:if="${productos.size}">
+
+                  <!-- Producto -->
+                  <div
+                    class="col-12 col-sm-6 col-md-4 col-lg-3"
+                    th:each="p : ${productos}"
+                  >
+                    <div class="card h-100 border-0 shadow-sm">
+                      <!-- Imagen -->
+                      <div class="position-relative">
+                        <img
+                          th:src="@{'/img/product_img/' + ${p.imagen}}"
+                          class="card-img-top img-fluid rounded-top"
+                          alt="Imagen de [[${p.titulo}]]"
+                        />
+                        <span
+                          class="badge bg-success position-absolute top-0 end-0 m-2"
+                          th:text="'-' + ${p.descuento} + '%'"
+                        ></span>
+                      </div>
+
+                      <!-- Detalles -->
+                      <div class="card-body text-center">
+                        <h6
+                          class="card-title fw-semibold text-truncate"
+                          th:text="${p.titulo}"
+                        ></h6>
+
+                        <p class="mb-2">
+                          <span
+                            class="text-muted text-decoration-line-through small"
+                            th:text="'s/' + ${p.precio}"
+                          ></span>
+                          <br />
+                          <span
+                            class="fw-bold text-success fs-5"
+                            th:text="'s/' + ${p.precioConDescuento}"
+                          ></span>
+                        </p>
+
+                        <a
+                          th:href="@{'/ver_productos/' + ${p.id}}"
+                          class="btn btn-outline-primary w-100"
+                        >
+                          <i class="fa-solid fa-eye me-1"></i> Ver detalles
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+
+                
+                  <!-- Fin Producto -->
+                     </th:block>
+                     <th:block th:unless="${productos.size>0}">
+                        <div class="alert alert-info text-center" role="alert">
+                          No se encontraron productos.
+                        </div>
+                     </th:block>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Fin Productos -->
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

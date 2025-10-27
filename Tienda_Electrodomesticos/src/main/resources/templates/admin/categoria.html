@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html
+  lang="es"
+  xmlns:th="http://www.thymeleaf.org"
+  th:replace="~{base::Layout(~{::section})}"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Gestión de Categorías</title>
+  </head>
+
+  <body>
+    <section>
+      <div class="container-fluid py-5 mt-4">
+        <div class="row g-4">
+          <!-- Formulario de registro de categoría -->
+          <div class="col-md-4">
+            <div class="card card-sh border-0 rounded-4 h-100">
+              <div
+                class="card-header bg-primary text-white text-center py-3 rounded-top"
+              >
+                <h4 class="fw-semibold mb-0">
+                  <i class="fa-solid fa-folder-plus me-2"></i> Agrega Categoría
+                </h4>
+
+                <!-- Mensaje de éxito -->
+                <th:block th:if="${session.successMsg}">
+                  <div
+                    class="alert alert-success alert-dismissible fade show mt-3 mb-0"
+                    role="alert"
+                  >
+                    <strong th:text="${session.successMsg}"></strong>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="alert"
+                      aria-label="Cerrar"
+                    ></button>
+                  </div>
+                  <th:block
+                    th:text="${@commonServiceImpl.removeSessionMessage()}"
+                  ></th:block>
+                </th:block>
+
+                <!-- Mensaje de error -->
+                <th:block th:if="${session.errorMsg}">
+                  <div
+                    class="alert alert-danger alert-dismissible fade show mt-3 mb-0"
+                    role="alert"
+                  >
+                    <strong th:text="${session.errorMsg}"></strong>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="alert"
+                      aria-label="Cerrar"
+                    ></button>
+                  </div>
+                  <th:block
+                    th:text="${@commonServiceImpl.removeSessionMessage()}"
+                  ></th:block>
+                </th:block>
+              </div>
+
+              <div class="card-body p-4">
+                <form
+                  action="/admin/guardar_categoria"
+                  method="post"
+                  enctype="multipart/form-data"
+                >
+                  <!-- Nombre -->
+                  <div class="mb-3">
+                    <label class="form-label fw-semibold"
+                      >Nombre de categoría</label
+                    >
+                    <input
+                      type="text"
+                      name="nombre"
+                      class="form-control"
+                      placeholder="Ejemplo: Electrodomésticos"
+                      required
+                    />
+                  </div>
+
+                  <!-- Estado -->
+                  <div class="mb-3">
+                    <label class="form-label fw-semibold d-block mb-2"
+                      >Estado</label
+                    >
+                    <div class="form-check form-check-inline">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="isActive"
+                        id="activo"
+                        value="true"
+                        checked
+                      />
+                      <label class="form-check-label" for="activo"
+                        >Activo</label
+                      >
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="isActive"
+                        id="inactivo"
+                        value="false"
+                      />
+                      <label class="form-check-label" for="inactivo"
+                        >Inactivo</label
+                      >
+                    </div>
+                  </div>
+
+                  <!-- Imagen -->
+                  <div class="mb-4">
+                    <label class="form-label fw-semibold">Imagen</label>
+                    <input
+                      type="file"
+                      name="file"
+                      id="fileInput"
+                      class="form-control"
+                      accept="image/*"
+                      required
+                    />
+                  </div>
+
+                  <!-- Vista previa -->
+                  <div class="mb-4 text-center">
+                    <img
+                      id="preview"
+                      class="img-fluid rounded shadow-sm"
+                      style="max-height: 120px"
+                    />
+                  </div>
+
+                  <!-- Botones -->
+                  <div class="d-flex justify-content-between gap-2">
+                    <button type="submit" class="btn btn-primary flex-grow-1">
+                      <i class="fa-solid fa-circle-check me-2"></i>Guardar
+                      Categoría
+                    </button>
+                    <a href="/admin/" class="btn btn-secondary flex-grow-1">
+                      <i class="fa-solid fa-arrow-left me-2"></i>Regresar al
+                      Panel
+                    </a>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tabla de categorías -->
+          <div class="col-md-8">
+            <div class="card shadow-sm border-0 rounded-4">
+              <!-- Header -->
+              <div
+                class="card-header bg-primary text-white text-center py-3 rounded-top"
+              >
+                <h4 class="fw-semibold mb-0">
+                  <i class="fa-solid fa-list me-2"></i>Lista de Categorías
+                </h4>
+              </div>
+
+              <!-- Body -->
+              <div class="card-body p-4">
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Categoría</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Imagen</th>
+                        <th scope="col" class="text-center">Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr th:each="cat, c : ${categorias}">
+                        <th scope="row">[[${c.count}]]</th>
+                        <td>[[${cat.nombre}]]</td>
+                        <!-- Estado con color -->
+                        <td>
+                          <span
+                            th:classappend="${cat.isActive} ? 'badge bg-success' : 'badge bg-danger'"
+                          >
+                            [[${cat.isActive} ? 'Activo' : 'Inactivo']]
+                          </span>
+                        </td>
+                        <!-- Imagen circular -->
+                        <td class="text-center">
+                          <img
+                            th:src="@{'/img/category_img/' + ${cat.imagenNombre}}"
+                            alt="Imagen Categoria"
+                            class="rounded-circle border"
+                            style="width: 50px; height: 50px; object-fit: cover"
+                          />
+                        </td>
+                        <!-- Acciones -->
+                        <td class="text-center">
+                          <div class="row g-1 justify-content-center">
+                            <div class="col-auto">
+                              <a
+                                th:href="@{'/admin/editar_categoria/' + ${cat.id}}"
+                                class="btn btn-sm btn-info d-flex align-items-center"
+                              >
+                                <i class="fa-solid fa-pen me-1"></i>
+                                <span>Editar</span>
+                              </a>
+                            </div>
+                            <div class="col-auto">
+                              <a
+                                th:href="@{'/admin/eliminar_categoria/' + ${cat.id}}"
+                                class="btn btn-sm btn-danger d-flex align-items-center"
+                              >
+                                <i class="fa-solid fa-trash me-1"></i>
+                                <span>Eliminar</span>
+                              </a>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

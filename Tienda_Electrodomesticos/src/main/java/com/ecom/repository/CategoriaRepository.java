@@ -1,0 +1,14 @@
+package com.ecom.repository;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.ecom.model.Categoria;
+
+public interface CategoriaRepository extends JpaRepository<Categoria, Integer> {
+
+    public Boolean existsByNombre(String nombre);
+
+    List<Categoria> findByIsActiveTrue();
+}

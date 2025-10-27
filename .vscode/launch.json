@@ -1,0 +1,14 @@
+{
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Spring Boot-Tienda_ElectrodomesticosApplication<Tienda_Electrodomesticos>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.ecom.Tienda_ElectrodomesticosApplication",
+      "projectName": "Tienda_Electrodomesticos",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
+    }
+  ]
+}
