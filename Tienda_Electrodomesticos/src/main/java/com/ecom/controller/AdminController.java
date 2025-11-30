@@ -10,6 +10,7 @@ import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
@@ -78,46 +79,59 @@ public class AdminController {
 		return "admin/categoria";
 	}
 
-	@PostMapping("/guardar_categoria")
-	public String guardarCategoria(@ModelAttribute Categoria categoria, @RequestParam MultipartFile file,
-			HttpSession session) {
+    @PostMapping("/guardar_categoria")
+    public String guardarCategoria(@ModelAttribute Categoria categoria,
+                                   @RequestParam MultipartFile file,
+                                   HttpSession session) {
 
-		String imagenNombre = file != null ? file.getOriginalFilename() : "default.jpg";
-		categoria.setImagenNombre(imagenNombre);
+        String imagenNombre = (file != null && !file.isEmpty())
+                ? file.getOriginalFilename()
+                : "default.jpg";
 
-		Boolean existeCategoria = categoriaService.existeCategoria(categoria.getNombre());
-		if (existeCategoria) {
-			session.setAttribute("errorMsg", "La categoría ya existe");
+        categoria.setImagenNombre(imagenNombre);
 
-		} else {
-			Categoria guardarCategoria = categoriaService.guardarCategoria(categoria);
-			if (ObjectUtils.isEmpty(guardarCategoria)) {
-				session.setAttribute("errorMsg", "No se pudo guardar la categoría | Error del Servidor");
-			} else {
-				try {
-					File guardarFile = new File("src/main/resources/static/img/category_img");
+        Boolean existeCategoria = categoriaService.existeCategoria(categoria.getNombre());
+        if (existeCategoria) {
+            session.setAttribute("errorMsg", "La categoría ya existe");
+            return "redirect:/admin/categoria";
+        }
 
-					if (file != null && !file.isEmpty()) {
-						Path path = Paths.get(
-								guardarFile.getAbsolutePath() + File.separator + file.getOriginalFilename());
+        Categoria guardarCategoria = categoriaService.guardarCategoria(categoria);
 
-						System.out.println(path);
-						Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-					}
+        if (ObjectUtils.isEmpty(guardarCategoria)) {
+            session.setAttribute("errorMsg", "No se pudo guardar la categoría | Error del Servidor");
+            return "redirect:/admin/categoria";
+        }
 
-					session.setAttribute("successMsg", "Categoría guardada correctamente");
+        try {
+            // Obtiene la carpeta REAL donde Spring carga los recursos
+            File carpetaReal = new ClassPathResource("static/img/category_img").getFile();
 
-				} catch (IOException e) {
-					e.printStackTrace();
-					session.setAttribute("errorMsg", "Error al guardar la imagen: " + e.getMessage());
-				}
-			}
+            // Crea la carpeta si no existe
+            if (!carpetaReal.exists()) {
+                carpetaReal.mkdirs();
+            }
 
-		}
-		return "redirect:/admin/categoria";
-	}
+            if (file != null && !file.isEmpty()) {
+                Path destino = Paths.get(carpetaReal.getAbsolutePath()
+                        + File.separator
+                        + file.getOriginalFilename());
 
-	@GetMapping("/eliminar_categoria/{id}")
+                Files.copy(file.getInputStream(), destino, StandardCopyOption.REPLACE_EXISTING);
+            }
+
+            session.setAttribute("successMsg", "Categoría guardada correctamente");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            session.setAttribute("errorMsg", "Error al guardar la imagen: " + e.getMessage());
+        }
+
+        return "redirect:/admin/categoria";
+    }
+
+
+    @GetMapping("/eliminar_categoria/{id}")
 	public String eliminarCategoria(@PathVariable int id, HttpSession session) {
 		{
 
@@ -186,56 +200,55 @@ public class AdminController {
 		return "redirect:/admin/editar_categoria/" + categoria.getId();
 	}
 
-	@PostMapping("/guardar_producto")
-	public String guardarProducto(
-			@ModelAttribute Producto producto,
-			@RequestParam("file") MultipartFile image,
-			HttpSession session) {
+    @PostMapping("/guardar_producto")
+    public String guardarProducto(
+            @ModelAttribute Producto producto,
+            @RequestParam("file") MultipartFile image,
+            HttpSession session) {
 
-		try {
-			// 🖼️ Nombre del archivo de imagen
-			String imagenNombre = image.isEmpty() ? "default.jpg" : image.getOriginalFilename();
-			producto.setImagen(imagenNombre);
-			producto.setDescuento(0);
-			producto.setPrecioConDescuento(producto.getPrecio());
+        try {
+            // Nombre de imagen
+            String imagenNombre = image.isEmpty() ? "default.jpg" : image.getOriginalFilename();
+            producto.setImagen(imagenNombre);
 
-			// 💾 Guardar producto en la base de datos
-			Producto guardarProducto = productoService.guardarProducto(producto);
 
-			if (!ObjectUtils.isEmpty(guardarProducto)) {
-				// 📁 Carpetas de guardado
-				File carpetaSrc = new File("src/main/resources/static/img/product_img");
-				File carpetaTarget = new File("target/classes/static/img/product_img");
+            // Guardar producto
+            Producto guardarProducto = productoService.guardarProducto(producto);
 
-				if (!carpetaSrc.exists())
-					carpetaSrc.mkdirs();
-				if (!carpetaTarget.exists())
-					carpetaTarget.mkdirs();
+            if (guardarProducto != null) {
 
-				if (!image.isEmpty()) {
-					// 📂 Guardar en ambas ubicaciones
-					Path pathSrc = Paths.get(carpetaSrc.getAbsolutePath(), image.getOriginalFilename());
-					Path pathTarget = Paths.get(carpetaTarget.getAbsolutePath(), image.getOriginalFilename());
+                if (!image.isEmpty()) {
 
-					// Sobrescribir si ya existe
-					Files.copy(image.getInputStream(), pathSrc, StandardCopyOption.REPLACE_EXISTING);
-					Files.copy(image.getInputStream(), pathTarget, StandardCopyOption.REPLACE_EXISTING);
-				}
+                    // Ruta REAL donde Spring sirve imágenes
+                    File carpetaReal = new ClassPathResource("static/img/product_img").getFile();
 
-				session.setAttribute("successMsg", "✅ Producto guardado correctamente");
-			} else {
-				session.setAttribute("errorMsg", "❌ No se pudo guardar el producto | Error del Servidor");
-			}
+                    if (!carpetaReal.exists()) {
+                        carpetaReal.mkdirs();
+                    }
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			session.setAttribute("errorMsg", "⚠️ Error al guardar el producto: " + e.getMessage());
-		}
+                    Path destino = Paths.get(
+                            carpetaReal.getAbsolutePath(),
+                            image.getOriginalFilename()
+                    );
 
-		return "redirect:/admin/agregar_producto";
-	}
+                    Files.copy(image.getInputStream(), destino, StandardCopyOption.REPLACE_EXISTING);
+                }
 
-	@GetMapping("/productos")
+                session.setAttribute("successMsg", "Producto guardado correctamente");
+            } else {
+                session.setAttribute("errorMsg", "No se pudo guardar el producto");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            session.setAttribute("errorMsg", "Error al guardar la imagen: " + e.getMessage());
+        }
+
+        return "redirect:/admin/agregar_producto";
+    }
+
+
+    @GetMapping("/productos")
 	public String verProductos(Model m) {
 		m.addAttribute("productos", productoService.getAllProductos());
 		return "admin/productos";

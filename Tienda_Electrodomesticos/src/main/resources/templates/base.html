@@ -3,6 +3,8 @@
   lang="es"
   xmlns:th="http://www.thymeleaf.org"
   th:fragment="Layout(content)"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+
 >
   <head>
     <meta charset="UTF-8" />
@@ -109,26 +111,21 @@
                   <span>Registrarse</span>
                 </a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link d-flex align-items-center px-2" href="#">
-                  <i class="fa-solid fa-gear me-2"></i>
-                  <span>Administración</span>
-                </a>
-              </li>
+
             </th:block>
             <th:block th:if="${usuario!=null}">
-              <li class="nav-item">
-                <a
-                  class="nav-link d-flex align-items-center px-2 text-warning"
-                  href="/usuario/cart"
-                >
-                  <i class="fa-solid fa-cart-shopping"></i>
-                  <span>Carrito [ [[${countCart}]] ]</span>
-                </a>
-              </li>
+                <li class="nav-item"
+                    sec:authorize="hasRole('USER')">
+                    <a class="nav-link d-flex align-items-center px-2 text-warning"
+                       href="/usuario/cart">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        <span>Carrito [ [[${countCart}]] ]</span>
+                    </a>
+                </li>
 
-              <li class="nav-item">
-                <a class="nav-link d-flex align-items-center px-2" href="#">
+
+                <li class="nav-item">
+                <a class="nav-link d-flex align-items-center px-2" href="admin/">
                   <i class="fa-solid fa-user-plus me-2"></i>
                   <span>[[${usuario.nombre}]]</span>
                 </a>

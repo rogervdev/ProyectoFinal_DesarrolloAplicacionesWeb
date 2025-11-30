@@ -25,8 +25,17 @@ public class ProductoServiceImpl implements ProductoService {
 
     @Override
     public Producto guardarProducto(Producto producto) {
+        // Calcular precio con descuento antes de guardar
+        if (producto.getDescuento() != null && producto.getDescuento() > 0) {
+            double descuentoValor = producto.getPrecio() * (producto.getDescuento() / 100.0);
+            producto.setPrecioConDescuento(producto.getPrecio() - descuentoValor);
+        } else {
+            producto.setPrecioConDescuento(producto.getPrecio());
+        }
+
         return productoRepository.save(producto);
     }
+
 
     @Override
     public List<Producto> getAllProductos() {
